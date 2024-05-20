@@ -9,3 +9,9 @@ Databricks Asset Bundles is a feature that allows you to package and distribute 
 ## Prerequisites
 
 - [Databricks CLI](https://docs.databricks.com/dev-tools/cli/index.html)
+
+## Getting Started
+
+```bash
+databricks bundle init https://github.com/JenspederM/databricks-kedro-bundle.git # --output-dir <output-dir>
+```
