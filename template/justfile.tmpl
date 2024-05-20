@@ -1,0 +1,33 @@
+PACKAGE_NAME:="{{ .project_slug }}"
+
+deploy:
+    rm -rf ./dist
+    kedro package
+    just bundle
+    just sync_conf
+    just sync_data
+    databricks bundle deploy --debug
+
+sync_conf:
+    @echo "Syncing Databricks asset bundle resources to DBFS"
+    tar -xf ./dist/conf-{{ "{{" }}PACKAGE_NAME{{ "}}" }}.tar.gz -C ./dist
+    -databricks fs rm dbfs:/FileStore/{{ "{{" }}PACKAGE_NAME{{ "}}" }}/conf --recursive
+    databricks fs cp ./dist/conf dbfs:/FileStore/{{ "{{" }}PACKAGE_NAME{{ "}}" }}/conf --recursive --overwrite
+
+sync_data:
+    @echo "Syncing Databricks asset bundle resources to DBFS"
+    -databricks fs rm dbfs:/FileStore/{{ "{{" }}PACKAGE_NAME{{ "}}" }}/data --recursive
+    databricks fs mkdirs dbfs:/FileStore/{{ "{{" }}PACKAGE_NAME{{ "}}" }}/data
+    databricks fs mkdirs dbfs:/FileStore/{{ "{{" }}PACKAGE_NAME{{ "}}" }}/data/01_raw
+    databricks fs mkdirs dbfs:/FileStore/{{ "{{" }}PACKAGE_NAME{{ "}}" }}/data/02_intermediate
+    databricks fs mkdirs dbfs:/FileStore/{{ "{{" }}PACKAGE_NAME{{ "}}" }}/data/03_primary
+    databricks fs mkdirs dbfs:/FileStore/{{ "{{" }}PACKAGE_NAME{{ "}}" }}/data/04_feature
+    databricks fs mkdirs dbfs:/FileStore/{{ "{{" }}PACKAGE_NAME{{ "}}" }}/data/05_model_input
+    databricks fs mkdirs dbfs:/FileStore/{{ "{{" }}PACKAGE_NAME{{ "}}" }}/data/06_models
+    databricks fs mkdirs dbfs:/FileStore/{{ "{{" }}PACKAGE_NAME{{ "}}" }}/data/07_model_output
+    databricks fs mkdirs dbfs:/FileStore/{{ "{{" }}PACKAGE_NAME{{ "}}" }}/data/08_reporting
+    databricks fs cp ./data/01_raw dbfs:/FileStore/{{ "{{" }}PACKAGE_NAME{{ "}}" }}/data/01_raw --recursive
+    
+bundle:
+    @echo "Creating Databricks asset bundle resources"
+    python ./src/{{ "{{" }}PACKAGE_NAME{{ "}}" }}/databricks_bundle.py

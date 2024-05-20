@@ -1,0 +1,86 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/{{ .project_slug }}"]
+
+[project]
+name = "{{ .project_slug }}"
+readme = "README.md"
+version = "0.1.0"
+dependencies = [
+    "ipython>=8.10",
+    "jupyterlab>=3.0",
+    "notebook",
+    "kedro~=0.19.5",
+    "kedro-datasets[spark.SparkDataset, pandas.ParquetDataset]>=1.0",
+    "kedro-telemetry>=0.3.1",
+    "numpy~=1.21",
+    "pytest-cov~=3.0",
+    "pytest-mock>=1.7.1, <2.0",
+    "pytest~=7.2",
+    "ruff~=0.1.8",
+    "yamldiff>=0.3",
+    "databricks-sdk>=0.27.1",
+    "delta-spark>=3.2.0",
+]
+
+[project.scripts]
+databricks_run = "{{ .project_slug }}.databricks_run:main"
+databricks_bundle = "{{ .project_slug }}.databricks_bundle:main"
+
+[project.entry-points."kedro.hooks"]
+
+[project.optional-dependencies]
+docs = [
+    "docutils<0.18.0",
+    "sphinx~=3.4.3",
+    "sphinx_rtd_theme==0.5.1",
+    "nbsphinx==0.8.1",
+    "sphinx-autodoc-typehints==1.11.1",
+    "sphinx_copybutton==0.3.1",
+    "ipykernel>=5.3, <7.0",
+    "Jinja2<3.1.0",
+    "myst-parser~=0.17.2",
+]
+
+[tool.kedro]
+package_name = "{{ .project_slug }}"
+project_name = "{{ .project_slug }}"
+kedro_init_version = "0.19.5"
+source_dir = "src"
+
+[tool.pytest.ini_options]
+addopts = """
+--cov-report term-missing \
+--cov src/{{ .project_slug }} -ra"""
+
+[tool.coverage.report]
+fail_under = 0
+show_missing = true
+exclude_lines = ["pragma: no cover", "raise NotImplementedError"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff]
+line-length = 88
+show-fixes = true
+select = [
+    "F",    # Pyflakes
+    "W",    # pycodestyle
+    "E",    # pycodestyle
+    "I",    # isort
+    "UP",   # pyupgrade
+    "PL",   # Pylint
+    "T201", # Print Statement
+]
+ignore = ["E501"] # Ruff format takes care of line-too-long
