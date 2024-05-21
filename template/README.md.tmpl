@@ -17,26 +17,26 @@ In order to get the best out of the template:
 
 ## How to install dependencies
 
-Declare any dependencies in `pyproject.toml` for `rye` or `poetry` installation.
-
-To install them, run:
-
+{{ if eq .package_manager "pip" }}
+Setup a virtual environment and install the dependencies:
+```bash
+python -m venv .venv
+source venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
 ```
+{{ else if eq .package_manager "rye" }}
+Synchronize the project with the dependencies:
+```bash
 rye sync
-
-# or
-
-poetry install
 ```
+{{ end }}
 
 ## How to run your Kedro pipeline
 
-You can run your Kedro project with:
-
-```
-# source .venv/bin/activate
-# or poetry shell
-
+You can run your Kedro pipeline with:
+```bash
+source .venv/bin/activate
 kedro run
 ```
 
@@ -44,14 +44,11 @@ kedro run
 
 To sync your project with databricks, you need to have the `databricks` CLI installed and configured.
 
-You can sync your project with databricks by running:
+You can deploy your project to databricks by running:
 ```bash
 chmod +x ./scripts/deploy.sh
 ./scripts/deploy.sh
 ```
-
-This will execute the `deploy` command defined in the `justfile`.
-
 
 ## How to test your Kedro project
 

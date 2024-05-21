@@ -1,0 +1,9 @@
+{{ skip "_preample" }}
+
+{{ if ne .package_manager "pip" }}
+    {{ skip "requirements.txt" }}
+{{ end }}
+
+{{ if ne .package_manager "poetry" }}
+    {{ skip "poetry.toml" }}
+{{ end }}

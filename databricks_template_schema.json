@@ -7,7 +7,7 @@
       "type": "string",
       "default": "kedro project",
       "pattern": "^[^.\\\\/A-Z]{3,}$",
-      "pattern_match_failure_message": "Project name must be at least 3 characters long and cannot contain the following characters: \"\\\", \"/\", \" \" and \".\" or any uppercase letters.",
+      "pattern_match_failure_message": "Project name must be at least 3 characters long and cannot contain the following characters: \"\\\", \"/\", \" \", \".\", and must be all lowercase letters.",
       "description": "\nProject Name. Default"
     },
     "project_slug": {
@@ -16,6 +16,13 @@
       "default": "{{ ((regexp `[- ]`).ReplaceAllString .project_name `_`) -}}",
       "description": "\nProject slug. Default",
       "hidden": true
+    },
+    "package_manager": {
+      "order": 3,
+      "type": "string",
+      "default": "pip",
+      "enum": ["pip", "rye", "poetry (experimental)"],
+      "description": "\nPackage manager to use. Default"
     }
   },
   "success_message": "\n*** Kedro Asset Bundle created in '{{.project_name}}' directory! ***\n\nPlease refer to the README.md for further instructions on getting started."

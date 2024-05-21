@@ -1,3 +1,54 @@
+{{ if eq .package_manager "poetry" }}
+####################
+# Poetry settings  #
+####################
+[tool.poetry]
+name = "{{ .project_slug }}"
+version = "0.1.0"
+description = ""
+authors = []
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.11"
+ipython = ">=8.10"
+jupyterlab = ">=3.0"
+notebook = "^7.2.0"
+kedro = ">=0.19.5,<0.20.0"
+kedro-datasets = {version = ">=3.0.0", extras = ["spark-sparkdataset,pandas-parquetdataset"]}
+kedro-telemetry = ">=0.3.1"
+numpy = ">=1.21,<2.0"
+pytest-cov = ">=3.0,<4.0"
+pytest-mock = ">=1.7.1,<2.0"
+pytest = ">=7.2,<8.0"
+ruff = ">=0.1.8,<0.2.0"
+yamldiff = ">=0.3"
+databricks-sdk = ">=0.27.1"
+delta-spark = ">=3.2.0"
+pandas = "^2.2.2"
+
+# Optional dependencies
+docutils = { version = "<0.18.0", optional = true }
+sphinx = { version = ">=3.4.3,<3.5.0", optional = true }
+sphinx-rtd-theme = { version = "0.5.1", optional = true }
+nbsphinx = { version = "0.8.1", optional = true }
+sphinx-autodoc-typehints = { version = "1.11.1", optional = true }
+sphinx-copybutton = { version = "0.3.1", optional = true }
+ipykernel = { version = ">=5.3,<7.0", optional = true }
+jinja2 = { version = "<3.1.0", optional = true }
+myst-parser = { version = ">=0.17.2,<0.18.0", optional = true }
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+databricks_run = "{{ .project_slug }}.databricks_run:main"
+databricks_bundle = "{{ .project_slug }}.databricks_bundle:main"
+{{ else if eq .package_manager "rye" }}
+####################
+# Rye settings     #
+####################
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
@@ -21,7 +72,7 @@ dependencies = [
     "jupyterlab>=3.0",
     "notebook",
     "kedro~=0.19.5",
-    "kedro-datasets[spark.SparkDataset, pandas.ParquetDataset]>=1.0",
+    "kedro-datasets[spark-sparkdataset, pandas-parquetdataset]>=3.0.0",
     "kedro-telemetry>=0.3.1",
     "numpy~=1.21",
     "pytest-cov~=3.0",
@@ -31,6 +82,7 @@ dependencies = [
     "yamldiff>=0.3",
     "databricks-sdk>=0.27.1",
     "delta-spark>=3.2.0",
+    "pandas~=2.2.2",
 ]
 
 [project.scripts]
@@ -51,6 +103,49 @@ docs = [
     "Jinja2<3.1.0",
     "myst-parser~=0.17.2",
 ]
+{{ else }}
+####################
+# Pip settings     #
+####################
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "{{ .project_slug }}"
+readme = "README.md"
+dynamic = ["dependencies", "version"]
+
+[project.scripts]
+databricks_run = "{{ .project_slug }}.databricks_run:main"
+databricks_bundle = "{{ .project_slug }}.databricks_bundle:main"
+
+[project.entry-points."kedro.hooks"]
+
+[project.optional-dependencies]
+docs = [
+    "docutils<0.18.0",
+    "sphinx~=3.4.3",
+    "sphinx_rtd_theme==0.5.1",
+    "nbsphinx==0.8.1",
+    "sphinx-autodoc-typehints==1.11.1",
+    "sphinx_copybutton==0.3.1",
+    "ipykernel>=5.3, <7.0",
+    "Jinja2<3.1.0",
+    "myst-parser~=0.17.2",
+]
+
+[tool.setuptools.dynamic]
+dependencies = { file = "requirements.txt" }
+version = { attr = "{{ .project_slug }}.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = false
+{{ end }}
+####################
+# Common settings  #
+####################
 
 [tool.kedro]
 package_name = "{{ .project_slug }}"
