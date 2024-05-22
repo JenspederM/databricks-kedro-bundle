@@ -224,7 +224,7 @@ def generate_resources(pipelines: dict[str, Pipeline]) -> dict[str, dict[str, An
             wf = _create_workflow(wf_name, pipeline)
             jobs[wf_name] = wf
 
-    resources = {name: {"resources": {"jobs": jobs}}}
+    resources = {name: {"resources": {"jobs": {name: wf}}} for name, wf in jobs.items()}
     log.info("Databricks resources generated successfully.")
     log.debug(resources)
     return resources
