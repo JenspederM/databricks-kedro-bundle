@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-# {{ cookiecutter.project_slug }} documentation build
+# {{ .project_slug }} documentation build
 # configuration file, created by sphinx-quickstart.
 #
 # This file is execfile()d with the current directory set to its
@@ -21,11 +21,11 @@ import re
 
 from kedro.framework.cli.utils import find_stylesheets
 
-from {{ cookiecutter.project_slug }} import __version__ as release
+from {{ .project_slug }} import __version__ as release
 
 # -- Project information -----------------------------------------------------
 
-project = "{{ cookiecutter.project_slug }}"
+project = "{{ .project_slug }}"
 author = "Kedro"
 
 # The short X.Y version.
@@ -118,7 +118,7 @@ html_show_sourcelink = False
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "{{ cookiecutter.project_slug }}doc"
+htmlhelp_basename = "{{ .project_slug }}doc"
 
 # -- Options for LaTeX output ------------------------------------------------
 
@@ -146,8 +146,8 @@ latex_elements = {
 latex_documents = [
     (
         master_doc,
-        "{{ cookiecutter.project_slug }}.tex",
-        "{{ cookiecutter.project_slug }} Documentation",
+        "{{ .project_slug }}.tex",
+        "{{ .project_slug }} Documentation",
         "Kedro",
         "manual",
     )
@@ -160,8 +160,8 @@ latex_documents = [
 man_pages = [
     (
         master_doc,
-        "{{ cookiecutter.project_slug }}",
-        "{{ cookiecutter.project_slug }} Documentation",
+        "{{ .project_slug }}",
+        "{{ .project_slug }} Documentation",
         [author],
         1,
     )
@@ -175,11 +175,11 @@ man_pages = [
 texinfo_documents = [
     (
         master_doc,
-        "{{ cookiecutter.project_slug }}",
-        "{{ cookiecutter.project_slug }} Documentation",
+        "{{ .project_slug }}",
+        "{{ .project_slug }} Documentation",
         author,
-        "{{ cookiecutter.project_slug }}",
-        "Project {{ cookiecutter.project_slug }} codebase.",
+        "{{ .project_slug }}",
+        "Project {{ .project_slug }} codebase.",
         "Nearest-Neighbour",
     )
 ]
