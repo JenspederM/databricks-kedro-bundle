@@ -1,0 +1,12 @@
+# You can define spark specific configuration here.
+
+spark.driver.maxResultSize: 3g
+spark.hadoop.fs.s3a.impl: org.apache.hadoop.fs.s3a.S3AFileSystem
+spark.sql.execution.arrow.pyspark.enabled: true
+
+# https://docs.kedro.org/en/stable/integrations/pyspark_integration.html#tips-for-maximising-concurrency-using-threadrunner
+spark.scheduler.mode: FAIR
+
+# Delta Lake configuration
+spark.sql.extensions: io.delta.sql.DeltaSparkSessionExtension
+spark.sql.catalog.spark_catalog: org.apache.spark.sql.delta.catalog.DeltaCatalog

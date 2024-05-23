@@ -44,7 +44,7 @@
 
 example_iris_data:
   type: spark.SparkDataset
-  filepath: /dbfs/FileStore/{{ .project_slug }}/data/01_raw/iris.csv
+  filepath: /dbfs/FileStore/kedro_project/data/01_raw/iris.csv
   file_format: csv
   load_args:
     header: True
@@ -58,35 +58,35 @@ example_iris_data:
 ## data before it is used in a pipeline or before it is saved to a data store.
 ##
 ## To change the underlying load/save logic of the UnityDataset class, you can modify the
-## `load` and `save` methods in the `{{ .project_slug }}/datasets/unity_dataset.py` file.
+## `load` and `save` methods in the `kedro_project/datasets/unity_dataset.py` file.
 
 
 X_train_unity:
-  type: {{ .project_slug }}.datasets.unity_dataset.UnityDataset
+  type: kedro_project.datasets.unity_dataset.UnityDataset
   #catalog: default
   database: default
   table: X_train
 
 X_test_unity:
-  type: {{ .project_slug }}.datasets.unity_dataset.UnityDataset
+  type: kedro_project.datasets.unity_dataset.UnityDataset
   #catalog: default
   database: default
   table: X_test
 
 y_train_unity:
-  type: {{ .project_slug }}.datasets.unity_dataset.UnityDataset
+  type: kedro_project.datasets.unity_dataset.UnityDataset
   #catalog: default
   database: default
   table: y_train
 
 y_test_unity:
-  type: {{ .project_slug }}.datasets.unity_dataset.UnityDataset
+  type: kedro_project.datasets.unity_dataset.UnityDataset
   #catalog: default
   database: default
   table: y_test
 
 y_pred_unity:
-  type: {{ .project_slug }}.datasets.unity_dataset.UnityDataset
+  type: kedro_project.datasets.unity_dataset.UnityDataset
   #catalog: default
   database: default
   table: y_pred
@@ -95,47 +95,47 @@ y_pred_unity:
 # for all SparkDatasets.
 X_train@pyspark:
   type: spark.SparkDataset
-  filepath: /dbfs/FileStore/{{ .project_slug }}/data/02_intermediate/X_train.parquet
+  filepath: /dbfs/FileStore/kedro_project/data/02_intermediate/X_train.parquet
   save_args:
     mode: overwrite
 
 X_train@pandas:
   type: pandas.ParquetDataset
-  filepath: /dbfs/FileStore/{{ .project_slug }}/data/02_intermediate/X_train.parquet
+  filepath: /dbfs/FileStore/kedro_project/data/02_intermediate/X_train.parquet
 
 X_test@pyspark:
   type: spark.SparkDataset
-  filepath: /dbfs/FileStore/{{ .project_slug }}/data/02_intermediate/X_test.parquet
+  filepath: /dbfs/FileStore/kedro_project/data/02_intermediate/X_test.parquet
   save_args:
     mode: overwrite
 
 X_test@pandas:
   type: pandas.ParquetDataset
-  filepath: /dbfs/FileStore/{{ .project_slug }}/data/02_intermediate/X_test.parquet
+  filepath: /dbfs/FileStore/kedro_project/data/02_intermediate/X_test.parquet
 
 y_train@pyspark:
   type: spark.SparkDataset
-  filepath: /dbfs/FileStore/{{ .project_slug }}/data/02_intermediate/y_train.parquet
+  filepath: /dbfs/FileStore/kedro_project/data/02_intermediate/y_train.parquet
   save_args:
     mode: overwrite
 
 y_train@pandas:
   type: pandas.ParquetDataset
-  filepath: /dbfs/FileStore/{{ .project_slug }}/data/02_intermediate/y_train.parquet
+  filepath: /dbfs/FileStore/kedro_project/data/02_intermediate/y_train.parquet
 
 y_test@pyspark:
   type: spark.SparkDataset
-  filepath: /dbfs/FileStore/{{ .project_slug }}/data/02_intermediate/y_test.parquet
+  filepath: /dbfs/FileStore/kedro_project/data/02_intermediate/y_test.parquet
   save_args:
     mode: overwrite
 
 y_test@pandas:
   type: pandas.ParquetDataset
-  filepath: /dbfs/FileStore/{{ .project_slug }}/data/02_intermediate/y_test.parquet
+  filepath: /dbfs/FileStore/kedro_project/data/02_intermediate/y_test.parquet
 
 y_pred@pandas:
   type: pandas.ParquetDataset
-  filepath: /dbfs/FileStore/{{ .project_slug }}/data/03_primary/y_pred.parquet
+  filepath: /dbfs/FileStore/kedro_project/data/03_primary/y_pred.parquet
 
 # This is an example how to use `MemoryDataset` with Spark objects that aren't `DataFrame`'s.
 # In particular, the `assign` copy mode ensures that the `MemoryDataset` will be assigned
