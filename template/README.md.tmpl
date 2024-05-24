@@ -17,27 +17,30 @@ In order to get the best out of the template:
 
 ## How to install dependencies
 
-{{ if eq .package_manager "pip" }}
 Setup a virtual environment and install the dependencies:
 ```bash
+{{ if eq .package_manager "pip" }}
 python -m venv .venv
 source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
-```
 {{ else if eq .package_manager "rye" }}
-Synchronize the project with the dependencies:
-```bash
 rye sync
-```
+{{ else }}
+poetry install
 {{ end }}
+```
 
 ## How to run your Kedro pipeline
 
 You can run your Kedro pipeline with:
 ```bash
+{{ if eq .package_manager "poetry" }}
+poetry run kedro run
+{{ else }}
 source .venv/bin/activate
 kedro run
+{{ end }}
 ```
 
 ## How to deploy your Kedro project to Databricks
