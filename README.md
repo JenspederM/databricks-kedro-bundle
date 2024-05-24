@@ -17,6 +17,7 @@ The main reason for this template is that it allows you to use `Kedro`'s data pi
 ## Getting Started
 
 To use this template, you can use the `databricks bundle init` command as shown below:
+
 ```bash
 databricks bundle init https://github.com/JenspederM/databricks-kedro-bundle.git # --output-dir <output-dir>
 ```
