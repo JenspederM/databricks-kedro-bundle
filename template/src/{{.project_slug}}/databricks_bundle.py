@@ -9,16 +9,7 @@ from typing import Any
 from kedro.framework.project import PACKAGE_NAME, find_pipelines
 from kedro.pipeline import Pipeline
 from rich import print
-from databricks.sdk.service.jobs import (
-    JobSettings,
-    JobCluster,
-    QueueSettings,
-    Task,
-    PythonWheelTask,
-    TaskDependency,
-    Format,
-)
-from databricks.sdk.service.compute import ClusterSpec, Library
+
 
 logging.basicConfig(level=logging.INFO)
 _PACKAGE = Path(__file__).parent
@@ -142,12 +133,17 @@ def _create_task(name, depends_on=None, job_cluster_id=None):
     Returns:
         Dict[str, Any]: a Databricks task
     """
-    task = Task(
-        task_key=name,
-        python_wheel_task=PythonWheelTask(
-            package_name=PACKAGE_NAME,
-            entry_point="databricks_run",
-            parameters=[
+    ## Follows the Databricks REST API schema. See "tasks" in the link below
+    ## https://docs.databricks.com/api/workspace/jobs/create
+    task = {
+        "task_key": name,
+        "job_cluster_key": job_cluster_id,
+        "libraries": [{"whl": "../dist/*.whl"}],
+        "depends_on": [{"task_key": dep.name} for dep in depends_on],
+        "python_wheel_task": {
+            "package_name": PACKAGE_NAME,
+            "entry_point": "databricks_run",
+            "parameters": [
                 "--nodes",
                 name,
                 "--conf-source",
@@ -155,13 +151,10 @@ def _create_task(name, depends_on=None, job_cluster_id=None):
                 "--package-name",
                 PACKAGE_NAME,
             ],
-        ),
-        job_cluster_key=job_cluster_id,
-        depends_on=[TaskDependency(task_key=dep.name) for dep in depends_on],
-        libraries=[Library(whl="../dist/*.whl")],
-    )
+        },
+    }
 
-    return task
+    return _sort_dict(task, _task_key_order)
 
 
 def _create_workflow(name: str, pipeline: Pipeline):
@@ -174,33 +167,33 @@ def _create_workflow(name: str, pipeline: Pipeline):
     Returns:
         Dict[str, Any]: a Databricks workflow
     """
-    settings = JobSettings(
-        name=name,
-        tasks=[
+    ## Follows the Databricks REST API schema
+    ## https://docs.databricks.com/api/workspace/jobs/create
+    workflow = {
+        "name": name,
+        "job_clusters": [
+            {
+                "job_cluster_key": "default",
+                "new_cluster": {
+                    "spark_version": "14.3.x-scala2.12",
+                    "node_type_id": "Standard_D4ds_v4",
+                    "num_workers": 1,
+                    "spark_env_vars": {
+                        "KEDRO_LOGGING_CONFIG": f"/dbfs/FileStore/{PACKAGE_NAME}/conf/logging.yml",
+                    },
+                },
+            }
+        ],
+        "tasks": [
             _create_task(node.name, depends_on=deps, job_cluster_id="default")
             for node, deps in pipeline.node_dependencies.items()
         ],
-        job_clusters=[
-            JobCluster(
-                "default",
-                new_cluster=ClusterSpec(
-                    spark_version="14.3.x-scala2.12",
-                    node_type_id="Standard_D4ds_v4",
-                    num_workers=1,
-                    spark_env_vars={
-                        "KEDRO_LOGGING_CONFIG": f"/dbfs/FileStore/{PACKAGE_NAME}/conf/logging.yml",
-                    },
-                ),
-            )
-        ],
-        max_concurrent_runs=1,
-        queue=QueueSettings(enabled=True),
-        format=Format.MULTI_TASK,
-    )
+        "max_concurrent_runs": 1,
+        "queue": {"enabled": True},
+        "format": "MULTI_TASK",
+    }
 
-    workflow = _sort_dict(settings.as_dict(), _workflow_key_order)
-    workflow["tasks"] = [_sort_dict(t, _task_key_order) for t in workflow["tasks"]]
-    return _remove_nulls_from_dict(workflow)
+    return _remove_nulls_from_dict(_sort_dict(workflow, _workflow_key_order))
 
 
 def generate_resources(pipelines: dict[str, Pipeline]) -> dict[str, dict[str, Any]]:
