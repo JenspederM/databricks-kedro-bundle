@@ -21,7 +21,7 @@
       "order": 3,
       "type": "string",
       "default": "pip",
-      "enum": ["pip", "rye", "poetry (experimental)"],
+      "enum": ["pip", "rye", "poetry"],
       "description": "\nPackage manager to use. Default"
     }
   },

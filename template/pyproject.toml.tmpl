@@ -14,9 +14,6 @@ python = ">=3.10,<3.11"
 ipython = ">=8.10"
 jupyterlab = ">=3.0"
 notebook = "^7.2.0"
-kedro = ">=0.19.5,<0.20.0"
-kedro-datasets = {version = ">=3.0.0", extras = ["spark-sparkdataset,pandas-parquetdataset"]}
-kedro-telemetry = ">=0.3.1"
 numpy = ">=1.21,<2.0"
 pytest-cov = ">=3.0,<4.0"
 pytest-mock = ">=1.7.1,<2.0"
@@ -25,7 +22,15 @@ ruff = ">=0.1.8,<0.2.0"
 yamldiff = ">=0.3"
 databricks-sdk = ">=0.27.1"
 delta-spark = ">=3.2.0"
-pandas = "^2.2.2"
+kedro = ">=0.19.5,<0.20.0"
+kedro-telemetry = ">=0.3.1"
+kedro-datasets = { version = "^3.0.0", extras = [
+    "spark-sparkdataset",
+    "pandas-parquetdataset",
+    "s3fs-base",
+    "pandas-base",
+    "hdfs-base",
+] }
 
 # Optional dependencies
 docutils = { version = "<0.18.0", optional = true }
