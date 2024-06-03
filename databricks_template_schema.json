@@ -1,5 +1,5 @@
 {
-  "welcome_message": "Welcome to Kedro Bundle Assets. For detailed information on project generation, see the README at https://github.com/jenspederm/kedro-asset-bundles.",
+  "welcome_message": "Welcome to the Databricks Kedro Bundle. For detailed information on project generation, see the README at https://github.com/jenspederm/databricks-kedro-bundle.",
   "min_databricks_cli_version": "v0.212.2",
   "properties": {
     "project_name": {
